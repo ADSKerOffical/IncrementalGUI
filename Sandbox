@@ -1,0 +1,168 @@
+local menu = Instance.new("ScreenGui")
+menu.Name = "MyMenu"
+menu.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+menu.ResetOnSpawn = false
+
+local menuFrame = Instance.new("Frame")
+menuFrame.Name = "MenuFrame"
+menuFrame.Size = UDim2.new(0.5, 0, 0.5, 0)
+menuFrame.Position = UDim2.new(0.25, 0, 0.25, 0)
+menuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+menuFrame.BorderSizePixel = 0
+menuFrame.Active = true
+menuFrame.Draggable = true
+menuFrame.Parent = menu
+
+local numberLabel = Instance.new("TextLabel")
+numberLabel.Name = "NumberLabel"
+numberLabel.Text = "0"
+numberLabel.Font = Enum.Font.SourceSans
+numberLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+numberLabel.TextSize = 48
+numberLabel.Size = UDim2.new(0.5, 0, 0.2, 0)
+numberLabel.Position = UDim2.new(0.25, 0, 0.1, 0)
+numberLabel.BackgroundTransparency = 1
+numberLabel.Parent = menuFrame
+
+local incrementButton = Instance.new("TextButton")
+incrementButton.Name = "IncrementButton"
+incrementButton.Text = "Click 1"
+incrementButton.Font = Enum.Font.SourceSans
+incrementButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+incrementButton.TextSize = 24
+incrementButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+incrementButton.Position = UDim2.new(0.1, 0, 0.4, 0)
+incrementButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+incrementButton.BorderSizePixel = 0
+incrementButton.Parent = menuFrame
+
+local upgradeButton = Instance.new("TextButton")
+upgradeButton.Name = "UpgradeButton"
+upgradeButton.Text = "Upgrade (Price: 10)"
+upgradeButton.Font = Enum.Font.SourceSans
+upgradeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+upgradeButton.TextSize = 24
+upgradeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+upgradeButton.Position = UDim2.new(0.5, 0, 0.4, 0)
+upgradeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+upgradeButton.BorderSizePixel = 0
+upgradeButton.Parent = menuFrame
+
+local superUpgradeButton = nil
+
+local rebirthButton = nil
+local rebirthPrice = 1500
+
+local upgradeLevel = 1
+local upgradePrice = 10
+local superUpgradeLevel = 2
+local superUpgradePrice = 200
+local rebirthMultiplier = 1
+
+function IncrementNumber()
+    numberLabel.Text = tostring(tonumber(numberLabel.Text) + upgradeLevel * rebirthMultiplier)
+end
+
+function UpgradeButton()
+    local currentValue = tonumber(numberLabel.Text)
+    if currentValue >= upgradePrice then
+        numberLabel.Text = tostring(currentValue - upgradePrice)
+        upgradeLevel = upgradeLevel + 1
+        upgradePrice = upgradePrice * 2
+        incrementButton.Text = "Click " .. tostring(upgradeLevel * rebirthMultiplier)
+        upgradeButton.Text = "Upgrade (Price: " .. tostring(upgradePrice) .. ")"
+
+        if upgradeLevel >= 10 and superUpgradeButton == nil then
+            superUpgradeButton = Instance.new("TextButton")
+            superUpgradeButton.Name = "SuperUpgradeButton"
+            superUpgradeButton.Text = "Super Upgrade (Price: " .. tostring(superUpgradePrice) .. ")"
+            superUpgradeButton.Font = Enum.Font.SourceSans
+            superUpgradeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            superUpgradeButton.TextSize = 24
+            superUpgradeButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+            superUpgradeButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+            
+            superUpgradeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+            superUpgradeButton.BorderSizePixel = 0
+            superUpgradeButton.Parent = menuFrame
+            superUpgradeButton.MouseButton1Click:Connect(SuperUpgradeButton)
+        end
+
+        if upgradeLevel >= 1000 and (rebirthButton == nil or rebirthButton.Parent == nil) then
+            rebirthButton = Instance.new("TextButton")
+            rebirthButton.Name = "RebirthButton"
+            rebirthButton.Text = "Rebirth (Price: " .. tostring(rebirthPrice) .. ")"
+            rebirthButton.Font = Enum.Font.SourceSans
+            rebirthButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            rebirthButton.TextSize = 24
+            rebirthButton.Size = UDim2.new(0.4, 0, 0.2, 0)
+            rebirthButton.Position = UDim2.new(0.5, 0, 0.6, 0)
+            rebirthButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+            rebirthButton.BorderSizePixel = 0
+            rebirthButton.Parent = menuFrame
+            rebirthButton.MouseButton1Click:Connect(RebirthButton)
+        end
+    else
+        Song = Instance.new("Sound", game.Workspace)
+Song.Name = "Spooky"
+Song.SoundId = "rbxassetid://742272572"
+Song.Volume = 1
+Song.PlaybackSpeed = 1
+Song.Looped = false
+Song:Play()
+    end
+end
+
+function SuperUpgradeButton()
+    local currentValue = tonumber(numberLabel.Text)
+    if currentValue >= superUpgradePrice then
+        numberLabel.Text = tostring(currentValue - superUpgradePrice)
+        superUpgradeLevel = superUpgradeLevel + 0.5
+        superUpgradePrice = superUpgradePrice * 2
+        upgradeLevel = upgradeLevel * 2
+        superUpgradeButton.Text = "Super Upgrade  (Price: " .. tostring(superUpgradePrice) .. ")"
+        incrementButton.Text = "Click " .. tostring(upgradeLevel * rebirthMultiplier)
+    else
+        Song = Instance.new("Sound", game.Workspace)
+Song.Name = "Spooky"
+Song.SoundId = "rbxassetid://742272572"
+Song.Volume = 1
+Song.PlaybackSpeed = 1
+Song.Looped = false
+Song:Play()
+    end
+end
+
+function RebirthButton()
+    local currentValue = tonumber(numberLabel.Text)
+    if currentValue >= rebirthPrice then
+        numberLabel.Text = "0"
+        upgradeLevel = 1
+        upgradePrice = 10
+        superUpgradeLevel = 1.5
+        superUpgradePrice = 200
+        rebirthPrice = rebirthPrice + 1500
+        rebirthMultiplier = rebirthMultiplier * 2
+        incrementButton.Text = "Click " .. tostring(upgradeLevel * rebirthMultiplier)
+        upgradeButton.Text = "Upgrade (Price: 10)"
+        if superUpgradeButton ~= nil then
+            superUpgradeButton:Destroy()
+            superUpgradeButton = nil
+        end
+        if rebirthButton ~= nil then
+            rebirthButton:Destroy()
+            rebirthButton = nil
+        end
+    else
+        Song = Instance.new("Sound", game.Workspace)
+Song.Name = "Spooky"
+Song.SoundId = "rbxassetid://742272572"
+Song.Volume = 1
+Song.PlaybackSpeed = 1
+Song.Looped = false
+Song:Play()
+    end
+end
+
+incrementButton.MouseButton1Click:Connect(IncrementNumber)
+upgradeButton.MouseButton1Click:Connect(UpgradeButton)
